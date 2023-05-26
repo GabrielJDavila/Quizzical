@@ -12,24 +12,56 @@ function App() {
   useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiplhttps://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple")
       .then(res => res.json())
-      .then(data => setQuestions(data.results))
+      .then(data => {
+        const modifiedData = data.results.map(question => {
+          const incorrectAnswers = [...question.incorrect_answers, question.correct_answer]
+          const shuffledAnswers = shuffleArray(incorrectAnswers)
+
+          return {
+            ...question,
+            incorrect_answers: shuffledAnswers,
+          }
+        })
+        setQuestions(modifiedData)
+      })
   }, [])
+
+  function shuffleArray(array) {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const temp = shuffledArray[i];
+      shuffledArray[i] = shuffledArray[j];
+      shuffledArray[j] = temp;
+    }
+    return shuffledArray;
+  }  
 
   function toggleStart() {
     setStart(prevStart => !prevStart)
-    console.log(questions)
   }
   
+  function checkAnswer(e) {
+    e.target.style.backgroundColor = "blue"
+    questions.forEach(question => {
+      if(question.correct_answer === e.target.textContent) {
+        console.log("works")
+      }
+    })
+    
+  }
+
   const questionText =
     questions.map((question, index) => {
       return (
         <Quiz
+          checkAnswer={checkAnswer}
           key={index}
           questionText={decode(question.question)}
-          correctAnswer={decode(question.correct_answer)}
           incorrectAnswer1={decode(question.incorrect_answers[0])}
           incorrectAnswer2={decode(question.incorrect_answers[1])}
           incorrectAnswer3={decode(question.incorrect_answers[2])}
+          incorrectAnswer4={decode(question.incorrect_answers[3])}
         />
       )
     })
