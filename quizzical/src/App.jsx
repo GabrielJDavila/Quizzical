@@ -44,6 +44,9 @@ function App() {
       {start &&
       questionText
       }
+      {start &&
+      <button className="finish-quiz">Check answers</button>
+      }
     </div>
   )
 }

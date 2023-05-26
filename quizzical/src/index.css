@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #505050;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -40,12 +40,14 @@ button {
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
-  font-size: 1em;
+  font-size: .75rem;
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
+  
   transition: border-color 0.25s;
+  margin: 1rem 0;
 }
 button:hover {
   border-color: #646cff;
@@ -53,6 +55,19 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.questions-container {
+  text-align: center;
+  border-bottom: 2px solid rgb(70, 69, 69);
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  justify-content: center;
+  margin: 0 auto;
 }
 
 @media (prefers-color-scheme: light) {
