@@ -8,6 +8,9 @@ import { decode } from 'html-entities'
 function App() {
   const [start, setStart] = useState(false)
   const [questions, setQuestions] = useState([])
+  const [answers, setAnswers] = useState([])
+  const [isSelected, setIsSelected] = useState(false)
+  const [score, setScore] = useState(0)
 
   useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiplhttps://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple")
@@ -16,13 +19,20 @@ function App() {
         const modifiedData = data.results.map(question => {
           const incorrectAnswers = [...question.incorrect_answers, question.correct_answer]
           const shuffledAnswers = shuffleArray(incorrectAnswers)
+          
+          const answers = shuffledAnswers.map(answer => ({
+            answerText: decode(answer),
+            isSelected: false,
+          }))
 
           return {
             ...question,
             incorrect_answers: shuffledAnswers,
+            answers: answers,
           }
         })
         setQuestions(modifiedData)
+        
       })
   }, [])
 
@@ -40,14 +50,19 @@ function App() {
   function toggleStart() {
     setStart(prevStart => !prevStart)
   }
-  
+
   function checkAnswer(e) {
-    e.target.style.backgroundColor = "blue"
-    questions.forEach(question => {
+    questions.map(question => {
       if(question.correct_answer === e.target.textContent) {
-        console.log("works")
+        question.answers.map(answer => {
+          if(answer.answerText === question.correct_answer) {
+            setScore(score + 1)
+            console.log("correct")
+          }
+        })
       }
     })
+    
     
   }
 
@@ -55,8 +70,9 @@ function App() {
     questions.map((question, index) => {
       return (
         <Quiz
-          checkAnswer={checkAnswer}
+          checkAnswer={(e) => checkAnswer(e)}
           key={index}
+          selected={isSelected}
           questionText={decode(question.question)}
           incorrectAnswer1={decode(question.incorrect_answers[0])}
           incorrectAnswer2={decode(question.incorrect_answers[1])}
