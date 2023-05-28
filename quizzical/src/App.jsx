@@ -24,7 +24,7 @@ function App() {
             answerText: decode(answer),
             isSelected: false,
           }))
-
+          setAnswers(answers)
           return {
             ...question,
             incorrect_answers: shuffledAnswers,
@@ -49,16 +49,19 @@ function App() {
   function toggleStart() {
     setStart(prevStart => !prevStart)
   }
-
+  
   function checkAnswer(e, index) {
     questions.map(question => {
       if(question.correct_answer === e.target.textContent) {
-        question.answers.map(answer => {
-          if(answer.answerText === question.correct_answer) {
-            setScore(score + 1)
-            console.log(answer)
-          }
-        })
+        console.log(question.answers[index])
+        console.log(answers[index])
+
+        // question.answers.map(answer => {
+        //   if(answer.answerText === question.correct_answer) {
+        //     setScore(score + 1)
+        //     console.log(question)
+        //   }
+        // })
       }
     })
     
