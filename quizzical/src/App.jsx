@@ -32,7 +32,6 @@ function App() {
           }
         })
         setQuestions(modifiedData)
-        
       })
   }, [])
 
@@ -51,13 +50,13 @@ function App() {
     setStart(prevStart => !prevStart)
   }
 
-  function checkAnswer(e) {
+  function checkAnswer(e, index) {
     questions.map(question => {
       if(question.correct_answer === e.target.textContent) {
         question.answers.map(answer => {
           if(answer.answerText === question.correct_answer) {
             setScore(score + 1)
-            console.log("correct")
+            console.log(answer)
           }
         })
       }
@@ -66,21 +65,21 @@ function App() {
     
   }
 
-  const questionText =
-    questions.map((question, index) => {
-      return (
-        <Quiz
-          checkAnswer={(e) => checkAnswer(e)}
-          key={index}
-          selected={isSelected}
-          questionText={decode(question.question)}
-          incorrectAnswer1={decode(question.incorrect_answers[0])}
-          incorrectAnswer2={decode(question.incorrect_answers[1])}
-          incorrectAnswer3={decode(question.incorrect_answers[2])}
-          incorrectAnswer4={decode(question.incorrect_answers[3])}
-        />
-      )
-    })
+  const questionText = questions.map((question, index) => {
+    return (
+      <Quiz
+        checkAnswer={checkAnswer}
+        key={index}
+        selected={isSelected}
+        questionText={decode(question.question)}
+        answers={question.answers}
+        // incorrectAnswer1={decode(question.incorrect_answers[0])}
+        // incorrectAnswer2={decode(question.incorrect_answers[1])}
+        // incorrectAnswer3={decode(question.incorrect_answers[2])}
+        // incorrectAnswer4={decode(question.incorrect_answers[3])}
+      />
+    )
+  })
 
   return (
     <div>

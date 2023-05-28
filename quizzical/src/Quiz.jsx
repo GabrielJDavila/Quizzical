@@ -9,10 +9,21 @@ export default function Quiz(props) {
         <div className="questions-container">
             <h3>{props.questionText}</h3>
             <div className="buttons-container">
-                <button onClick={props.checkAnswer} style={selectedStyles} className="question">{props.incorrectAnswer1}</button>
+                {props.answers.map((answer, index) => {
+                    return (
+                        <button
+                            key={index}
+                            className="question"
+                            onClick={(e) => props.checkAnswer(e, index)}
+                        >
+                            {answer.answerText}
+                        </button>
+                    )
+                })}
+                {/* <button onClick={props.checkAnswer} style={selectedStyles} className="question">{props.incorrectAnswer1}</button>
                 <button onClick={props.checkAnswer} style={selectedStyles} className="question">{props.incorrectAnswer2}</button>
                 <button onClick={props.checkAnswer} style={selectedStyles} className="question">{props.incorrectAnswer3}</button>
-                <button onClick={props.checkAnswer} style={selectedStyles} className="question">{props.incorrectAnswer4}</button>
+                <button onClick={props.checkAnswer} style={selectedStyles} className="question">{props.incorrectAnswer4}</button> */}
             </div>
         </div>
     )
