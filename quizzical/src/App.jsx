@@ -4,31 +4,57 @@ import Start from './Start'
 import Quiz from './Quiz'
 import React, { useState, useEffect } from 'react'
 import { decode } from 'html-entities'
+import { nanoid } from 'nanoid'
 
 function App() {
   const [start, setStart] = useState(false)
   const [questions, setQuestions] = useState([])
-  const [answers, setAnswers] = useState([])
   const [isSelected, setIsSelected] = useState(false)
   const [score, setScore] = useState(0)
+  
+  // function genNewBtn(isCorrect, answer) {
+  //   return {
+  //     answer: answer,
+  //     isCorrect: isCorrect,
+  //     isSelected: false,
+  //     id: nanoid()
+  //   }
+  // }
 
   useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiplhttps://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple")
       .then(res => res.json())
       .then(data => {
         const modifiedData = data.results.map(question => {
+          // const quizQuestions = decode(question.question)
+          const correctAns = question.correct_answer
+          // const incorrectAns = question.incorrect_answers
+          // let answersArr = []
+          // incorrectAns.map(answer => {
+          //   return answersArr.push(genNewBtn(false, decode(incorrectAns)))
+          // })
+          // const randomNum = Math.floor(Math.random() * 4)
+          // answersArr.splice(randomNum, 0, correctAns)
+          // return {
+          //   id: nanoid(),
+          //   question: quizQuestions,
+          //   answers: answersArr,
+          // }
           const incorrectAnswers = [...question.incorrect_answers, question.correct_answer]
           const shuffledAnswers = shuffleArray(incorrectAnswers)
           
           const answers = shuffledAnswers.map(answer => ({
             answerText: decode(answer),
             isSelected: false,
+            isCorrect: answer === correctAns ? true : false,
+            id: nanoid()
           }))
-          setAnswers(answers)
+          
           return {
             ...question,
-            incorrect_answers: shuffledAnswers,
+            // incorrect_answers: shuffledAnswers,
             answers: answers,
+            id: nanoid()
           }
         })
         setQuestions(modifiedData)
@@ -48,22 +74,40 @@ function App() {
 
   function toggleStart() {
     setStart(prevStart => !prevStart)
+    console.log(questions)
   }
   
-  function checkAnswer(e, index) {
-    questions.map(question => {
-      if(question.correct_answer === e.target.textContent) {
-        console.log(question.answers[index])
-        console.log(answers[index])
-
-        // question.answers.map(answer => {
-        //   if(answer.answerText === question.correct_answer) {
-        //     setScore(score + 1)
-        //     console.log(question)
-        //   }
-        // })
-      }
+  function checkAnswer(questionId, answerId) {
+    console.log(questionId)
+    setQuestions(oldQuestions => {
+      return oldQuestions.map(question => {
+        if(question.id === questionId) {
+          return {
+            ...question,
+            answers: question.answers.map( answer => {
+              console.log(answer.id)
+              if(answer.id === answerId) {
+                console.log("selected")
+                // return {...answer, isSelected: true}
+              } else {
+                return {...answer, isSelected: false}
+              }
+            })
+          }
+        } else {
+          return question
+        }
+      })
     })
+    // questions.map(question => {
+    //   if(question.correct_answer === e.target.textContent) {
+    //     question.answers.map(answer => {
+    //       if(answer.isCorrect) {
+    //         re
+    //       }
+    //     })
+    //   }
+    // })
     
     
   }
@@ -72,14 +116,11 @@ function App() {
     return (
       <Quiz
         checkAnswer={checkAnswer}
-        key={index}
+        key={question.id}
         selected={isSelected}
         questionText={decode(question.question)}
         answers={question.answers}
-        // incorrectAnswer1={decode(question.incorrect_answers[0])}
-        // incorrectAnswer2={decode(question.incorrect_answers[1])}
-        // incorrectAnswer3={decode(question.incorrect_answers[2])}
-        // incorrectAnswer4={decode(question.incorrect_answers[3])}
+        questionId={question.id}
       />
     )
   })
