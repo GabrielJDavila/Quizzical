@@ -7,9 +7,9 @@ import { decode } from 'html-entities'
 import { nanoid } from 'nanoid'
 
 function App() {
+  
   const [start, setStart] = useState(false)
   const [questions, setQuestions] = useState([])
-  const [isSelected, setIsSelected] = useState(false)
   const [score, setScore] = useState(0)
   
   // function genNewBtn(isCorrect, answer) {
@@ -20,7 +20,7 @@ function App() {
   //     id: nanoid()
   //   }
   // }
-
+  console.log(questions)
   useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiplhttps://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple")
       .then(res => res.json())
@@ -74,31 +74,47 @@ function App() {
 
   function toggleStart() {
     setStart(prevStart => !prevStart)
-    console.log(questions)
   }
   
-  function checkAnswer(questionId, answerId) {
-    console.log(questionId)
-    setQuestions(oldQuestions => {
-      return oldQuestions.map(question => {
-        if(question.id === questionId) {
+  function selectAnswer(e, answerId) {
+    console.log(e.target.id)
+    console.log(answerId)
+    if(e.target.id === answerId) {
+      setQuestions(oldQuestions => {
+        return oldQuestions.map(question => {
           return {
             ...question,
-            answers: question.answers.map( answer => {
-              console.log(answer.id)
+            answers: question.answers.map(answer => {
               if(answer.id === answerId) {
-                console.log("selected")
-                // return {...answer, isSelected: true}
-              } else {
-                return {...answer, isSelected: false}
-              }
+                return {...answer, isSelected: true}
+              } else {return {...answer, isSelected: false}}
             })
           }
-        } else {
-          return question
-        }
+        })
       })
-    })
+    }
+    // setQuestions(oldQuestions => {
+    //   return oldQuestions.map(question => {
+    //     console.log(questionId)
+    //     if(questions.id === questionId) {
+    //       console.log("qorks")
+    //       return {
+    //         ...question,
+    //         answers: question.answers.map( answer => {
+    //           console.log(answer.id)
+    //           if(answer.id === answerId) {
+    //             console.log("selected")
+    //             // return {...answer, isSelected: true}
+    //           } else {
+    //             return {...answer, isSelected: false}
+    //           }
+    //         })
+    //       }
+    //     } else {
+    //       return question
+    //     }
+    //   })
+    // })
     // questions.map(question => {
     //   if(question.correct_answer === e.target.textContent) {
     //     question.answers.map(answer => {
@@ -112,13 +128,13 @@ function App() {
     
   }
 
-  const questionText = questions.map((question, index) => {
+  const questionText = questions.map((question) => {
     return (
       <Quiz
-        checkAnswer={checkAnswer}
+        selectAnswer={selectAnswer}
         key={question.id}
-        selected={isSelected}
         questionText={decode(question.question)}
+        quizQuestions={questions}
         answers={question.answers}
         questionId={question.id}
       />
