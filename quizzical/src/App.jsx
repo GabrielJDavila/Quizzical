@@ -20,7 +20,7 @@ function App() {
   //     id: nanoid()
   //   }
   // }
-  console.log(questions)
+  console.log(score)
   useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiplhttps://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple")
       .then(res => res.json())
@@ -75,24 +75,68 @@ function App() {
   function toggleStart() {
     setStart(prevStart => !prevStart)
   }
-  
   function selectAnswer(e, answerId) {
-    console.log(e.target.id)
-    console.log(answerId)
-    if(e.target.id === answerId) {
-      setQuestions(oldQuestions => {
-        return oldQuestions.map(question => {
-          return {
-            ...question,
-            answers: question.answers.map(answer => {
-              if(answer.id === answerId) {
-                return {...answer, isSelected: true}
-              } else {return {...answer, isSelected: false}}
-            })
-          }
-        })
+    setQuestions(oldQuestions => {
+      let newScore = score; // Initialize the new score
+
+      const newQuestions = oldQuestions.map(question => {
+        if (question.id !== e.target.dataset.questionId) {
+          // Preserve the isSelected state for other questions
+          return question;
+        }
+
+        // Update the selected answer for the current question
+        return {
+          ...question,
+          answers: question.answers.map(answer => {
+            if (answer.id === answerId) {
+              // Toggle the isSelected state for the selected answer
+              let isSelected = answer.isSelected
+
+              // Update the score if the selected answer is correct
+              if (!isSelected && answer.isCorrect) {
+                newScore++
+              } else if (isSelected && answer.isCorrect) {
+                newScore--
+              }
+
+              isSelected = !isSelected; // Toggle the isSelected state
+              return { ...answer, isSelected }
+            }
+            return answer
+          })
+        }
       })
-    }
+
+      setScore(newScore); // Update the score state
+      return newQuestions; // Return the updated questions
+    });
+  }
+  // function selectAnswer(e, answerId) {
+  //   if(e.target.id === answerId) {
+  //     setQuestions(oldQuestions => {
+  //       return oldQuestions.map(question => {
+  //         if(question.id !== e.target.dataset.questionId) {
+  //           return question
+  //         }
+  //         return {
+  //           ...question,
+  //           answers: question.answers.map(answer => {
+  //             if(answer.id === answerId) {
+  //               const isSelected = !answer.isSelected
+  //               if(isSelected)
+  //               setScore(prevScore => prevScore + 1)
+  //               return {...answer, isSelected: !answer.isSelected}
+  //             } else if(answer.isSelected) {
+  //               return {...answer, isSelected: false}
+  //             } else {
+  //               return answer
+  //             }
+  //           })
+  //         }
+  //       })
+  //     })
+  //   }
     // setQuestions(oldQuestions => {
     //   return oldQuestions.map(question => {
     //     console.log(questionId)
@@ -126,7 +170,7 @@ function App() {
     // })
     
     
-  }
+  
 
   const questionText = questions.map((question) => {
     return (

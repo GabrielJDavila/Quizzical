@@ -61,6 +61,7 @@ export default function Quiz(props) {
                             key={answer.id}
                             className="question"
                             id={answer.id}
+                            data-question-id={props.questionId}
                             style={styles}
                             onClick={(e) => props.selectAnswer(e, answer.id)}
                         >
