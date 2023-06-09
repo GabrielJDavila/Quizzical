@@ -2,12 +2,14 @@
 import './App.css'
 import Start from './Start'
 import Quiz from './Quiz'
+import Endgame from './Endgame'
 import React, { useState, useEffect } from 'react'
 import { decode } from 'html-entities'
 import { nanoid } from 'nanoid'
 
 function App() {
   
+  const [loading, setLoading] = useState(false)
   const [start, setStart] = useState(false)
   const [questions, setQuestions] = useState([])
   const [checked, setChecked] = React.useState(false)
@@ -21,11 +23,12 @@ function App() {
   //     id: nanoid()
   //   }
   // }
-  console.log(questions)
   useEffect(() => {
+    setLoading(true)
     fetch("https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiplhttps://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple")
       .then(res => res.json())
       .then(data => {
+        setLoading(false)
         const modifiedData = data.results.map(question => {
           // const quizQuestions = decode(question.question)
           const correctAns = question.correct_answer
@@ -53,7 +56,6 @@ function App() {
           
           return {
             ...question,
-            // incorrect_answers: shuffledAnswers,
             answers: answers,
             id: nanoid()
           }
@@ -85,7 +87,6 @@ function App() {
             ...question,
             answers: question.answers.map(answer => {
               if(answer.id === answerId) {
-                console.log(`selected ${answerId}`)
                 return {...answer, isSelected: true}
               } else {
                 return {...answer, isSelected: false}
@@ -125,6 +126,9 @@ function App() {
     }))
   }
 
+  function reload() {
+    window.location.reload()
+  }
   // function selectAnswer(e, answerId) {
   //   setQuestions(oldQuestions => {
   //     let newScore = score; // Initialize the new score
@@ -243,6 +247,9 @@ function App() {
         startQuiz={() => toggleStart()}
       />
       }
+      {start && loading &&
+      <h2>Loading Quiz...</h2>
+      }
       {start &&
       <Quiz
         quizQuestions={questions}
@@ -250,8 +257,15 @@ function App() {
         checked={checked}
       />
       }
-      {start &&
-      <button className="finish-quiz">Check answers</button>
+      {!checked && start && !loading &&
+      <button className="finish-quiz" onClick={checkAnswers}>Check answers</button>
+      }
+      {
+      checked &&
+      <Endgame
+        totalScore={score}
+        reloadGame={reload}
+      />
       }
     </div>
   )

@@ -6,7 +6,7 @@ export default function Quiz(props) {
         const displayQuestion = 
             <h4
                 key={question.id}
-                className=""
+                className="question-title"
             >
                 {decode(question.question)}
             </h4>
