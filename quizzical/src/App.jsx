@@ -10,6 +10,7 @@ function App() {
   
   const [start, setStart] = useState(false)
   const [questions, setQuestions] = useState([])
+  const [checked, setChecked] = React.useState(false)
   const [score, setScore] = useState(0)
   
   // function genNewBtn(isCorrect, answer) {
@@ -20,7 +21,7 @@ function App() {
   //     id: nanoid()
   //   }
   // }
-  console.log(score)
+  console.log(questions)
   useEffect(() => {
     fetch("https://opentdb.com/api.php?amount=10&category=15&difficulty=medium&type=multiplhttps://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple")
       .then(res => res.json())
@@ -75,43 +76,93 @@ function App() {
   function toggleStart() {
     setStart(prevStart => !prevStart)
   }
-  function selectAnswer(e, answerId) {
-    setQuestions(oldQuestions => {
-      let newScore = score; // Initialize the new score
 
-      const newQuestions = oldQuestions.map(question => {
-        if (question.id !== e.target.dataset.questionId) {
-          // Preserve the isSelected state for other questions
-          return question;
-        }
-
-        // Update the selected answer for the current question
-        return {
-          ...question,
-          answers: question.answers.map(answer => {
-            if (answer.id === answerId) {
-              // Toggle the isSelected state for the selected answer
-              let isSelected = answer.isSelected
-
-              // Update the score if the selected answer is correct
-              if (!isSelected && answer.isCorrect) {
-                newScore++
-              } else if (isSelected && answer.isCorrect) {
-                newScore--
+  function selectButton(questionId, answerId) {
+    if(!checked) {
+      setQuestions(oldQuestions => oldQuestions.map(question => {
+        if(question.id === questionId) {
+          return {
+            ...question,
+            answers: question.answers.map(answer => {
+              if(answer.id === answerId) {
+                console.log(`selected ${answerId}`)
+                return {...answer, isSelected: true}
+              } else {
+                return {...answer, isSelected: false}
               }
-
-              isSelected = !isSelected; // Toggle the isSelected state
-              return { ...answer, isSelected }
-            }
-            return answer
-          })
+            })
+          }
+        } else {
+          return question
         }
-      })
-
-      setScore(newScore); // Update the score state
-      return newQuestions; // Return the updated questions
-    });
+      }))
+    }
+    // setQuestions(oldQuestions => oldQuestions.map(question => {
+    //   if(question.id === questionId) {
+    //     return {
+    //       ...question,
+    //       answers: question.answers.map(answer => {
+    //         if(answer.id === answerId) {
+    //           console.log(`selected ${answerId}`)
+    //           return {...answer, isSelected: true}
+    //         } else {
+    //           return {...answer, isSelected: false}
+    //         }
+    //       })
+    //     }
+    //   } else {
+    //     return question
+    //   }
+    // }))
   }
+
+  function checkAnswers() {
+    setChecked(true)
+    questions.map(question => question.answers.map(answer => {
+      if(answer.isSelected === true && answer.isCorrect) {
+        setScore(prevScore => prevScore + 1)
+      }
+    }))
+  }
+
+  // function selectAnswer(e, answerId) {
+  //   setQuestions(oldQuestions => {
+  //     let newScore = score; // Initialize the new score
+
+  //     const newQuestions = oldQuestions.map(question => {
+  //       if (question.id !== e.target.dataset.questionId) {
+  //         // Preserve the isSelected state for other questions
+  //         return question;
+  //       }
+
+  //       // Update the selected answer for the current question
+        
+  //       const updatedAnswers = question.answers.map(answer => {
+  //           if (answer.id === answerId) {
+  //             // Toggle the isSelected state for the selected answer
+  //             let isSelected = !answer.isSelected
+
+  //             // Update the score if the selected answer is correct
+  //             if (isSelected && answer.isCorrect) {
+  //               newScore++
+  //             } else if (!isSelected && answer.isCorrect) {
+  //               newScore--
+  //             }
+
+  //             return {...answer, isSelected}
+  //           } else {
+  //             return {...answer, isSelected: false}
+  //           }
+              
+  //       })
+        
+  //     })
+
+  //     setScore(newScore); // Update the score state
+  //     return newQuestions; // Return the updated questions
+  //   });
+  // }
+
   // function selectAnswer(e, answerId) {
   //   if(e.target.id === answerId) {
   //     setQuestions(oldQuestions => {
@@ -172,18 +223,18 @@ function App() {
     
   
 
-  const questionText = questions.map((question) => {
-    return (
-      <Quiz
-        selectAnswer={selectAnswer}
-        key={question.id}
-        questionText={decode(question.question)}
-        quizQuestions={questions}
-        answers={question.answers}
-        questionId={question.id}
-      />
-    )
-  })
+  // const questionText = questions.map((question) => {
+  //   return (
+  //     <Quiz
+  //       selectAnswer={selectAnswer}
+  //       key={question.id}
+  //       questionText={decode(question.question)}
+  //       quizQuestions={questions}
+  //       answers={question.answers}
+  //       questionId={question.id}
+  //     />
+  //   )
+  // })
 
   return (
     <div>
@@ -193,7 +244,11 @@ function App() {
       />
       }
       {start &&
-      questionText
+      <Quiz
+        quizQuestions={questions}
+        selectButton={selectButton}
+        checked={checked}
+      />
       }
       {start &&
       <button className="finish-quiz">Check answers</button>

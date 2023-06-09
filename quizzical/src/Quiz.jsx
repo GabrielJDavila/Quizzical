@@ -2,7 +2,49 @@ import { decode } from 'html-entities'
 import { nanoid } from 'nanoid'
 
 export default function Quiz(props) {
-    
+    const questions = props.quizQuestions.map((question, index) => {
+        const displayQuestion = 
+            <h4
+                key={question.id}
+                className=""
+            >
+                {decode(question.question)}
+            </h4>
+        const displayAnswers = question.answers.map(answer => {
+
+            function styles() {
+                if(answer.isSelected) {
+                    return {backgroundColor: "#94D7A2"}
+                } else if(props.checked && !answer.isSelected && answer.isCorrect) {
+                    return {backgroundColor: "#F8BCBC"}
+                }
+            }
+
+            return (
+                <button
+                    key={answer.id}
+                    className="answer"
+                    style={styles()}
+                    onClick={() => props.selectButton(question.id, answer.id)}
+                >
+                    {answer.answerText}
+                </button>
+            )
+        })
+        return (
+            <div key={nanoid()} className="questions-container">
+                {displayQuestion}
+                <div key={nanoid()} className="buttons-container">
+                    {displayAnswers}
+                </div>
+            </div>
+        )
+    })
+    return (
+        <div>
+            {questions}
+        </div>
+    )
     // function styles(answer) {
     //     if(answer.isSelected) {
     //         return {backgroundColor: "#94D7A2"}
@@ -11,7 +53,7 @@ export default function Quiz(props) {
     //     }
     // }
 
-    // const questions = props.quizQuestions.map(question => {
+    // const questions = props.questions.map(question => {
     //     const displayQuestion =
     //         <h3
     //             key={question.id}
@@ -41,37 +83,39 @@ export default function Quiz(props) {
     //         </div>
     //     )
     // })
-    const questionId = props.quizQuestions.map(question => {
-        return question.id
-    })
+
+    // const questionId = props.quizQuestions.map(question => {
+    //     return question.id
+    // })
     
-    return (
-        // <div>
-        //     {questions}
-        // </div>
-        <div className="questions-container">
-            <h3>{props.questionText}</h3>
-            <div className="buttons-container">
-                {props.answers.map(answer => {
-                    const styles = {
-                        backgroundColor: answer.isSelected ? "blue" : ""
-                    }
-                    return (
-                        <button
-                            key={answer.id}
-                            className="question"
-                            id={answer.id}
-                            data-question-id={props.questionId}
-                            style={styles}
-                            onClick={(e) => props.selectAnswer(e, answer.id)}
-                        >
-                            {answer.answerText}
-                        </button>
-                    )
-                })}
+    // return (
+    //     // <div>
+    //     //     {questions}
+    //     // </div>
+    //     <div className="questions-container">
+    //         <h3>{props.questionText}</h3>
+    //         <div className="buttons-container">
+    //             {props.answers.map(answer => {
+    //                 const styles = {
+    //                     backgroundColor: answer.isSelected ? "blue" : ""
+    //                 }
+    //                 return (
+    //                     <button
+    //                         key={answer.id}
+    //                         className="question"
+    //                         id={answer.id}
+    //                         data-question-id={props.questionId}
+    //                         style={styles}
+    //                         onClick={(e) => props.selectAnswer(e, answer.id)}
+    //                         disabled={answer.isSelected}
+    //                     >
+    //                         {answer.answerText}
+    //                     </button>
+    //                 )
+    //             })}
                 
-            </div>
-        </div>
-    )
+    //         </div>
+    //     </div>
+    // )
 }
 
