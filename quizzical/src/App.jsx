@@ -242,31 +242,43 @@ function App() {
 
   return (
     <div>
-      {!start &&
-      <Start
-        startQuiz={() => toggleStart()}
-      />
-      }
-      {start && loading &&
-      <h2>Loading Quiz...</h2>
-      }
-      {start &&
-      <Quiz
-        quizQuestions={questions}
-        selectButton={selectButton}
-        checked={checked}
-      />
-      }
-      {!checked && start && !loading &&
-      <button className="finish-quiz" onClick={checkAnswers}>Check answers</button>
-      }
-      {
-      checked &&
-      <Endgame
-        totalScore={score}
-        reloadGame={reload}
-      />
-      }
+      <img
+        src="./src/assets/blob1.png"
+        alt="light blue blob"
+        className="blue-blob"
+      ></img>
+      <img
+        src="./src/assets/blob2.png"
+        alt="yellow blob"
+        className="yellow-blob"
+      ></img>
+      <div className="quiz-container">
+        {!start &&
+        <Start
+          startQuiz={() => toggleStart()}
+        />
+        }
+        {start && loading &&
+        <h2>Loading Quiz...</h2>
+        }
+        {start &&
+        <Quiz
+          quizQuestions={questions}
+          selectButton={selectButton}
+          checked={checked}
+        />
+        }
+        {!checked && start && !loading &&
+        <button className="finish-quiz" onClick={checkAnswers}>Check answers</button>
+        }
+        {
+        checked &&
+        <Endgame
+          totalScore={score}
+          reloadGame={reload}
+        />
+        }
+      </div>
     </div>
   )
 }

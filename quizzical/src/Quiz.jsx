@@ -14,9 +14,16 @@ export default function Quiz(props) {
 
             function styles() {
                 if(answer.isSelected) {
-                    return {backgroundColor: "#94D7A2"}
+                    return {
+                        backgroundColor: "#D6DBF5",
+                        border: "none",
+                        scale: ".95",
+                        fontWeight: "bold"
+                    }
+                // } else if(props.checked && answer.isSelected && answer.isCorrect){
+                //     return {backgroundColor: "#94D7A2"}
                 } else if(props.checked && !answer.isSelected && answer.isCorrect) {
-                    return {backgroundColor: "#F8BCBC"}
+                    return {backgroundColor: "#F8BCBC", fontWeight: "bold"}
                 }
             }
 

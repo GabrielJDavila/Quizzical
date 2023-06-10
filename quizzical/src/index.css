@@ -4,8 +4,9 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #505050;
+  color: #293264;
+
+  background: white;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,6 +30,21 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  position: relative;
+}
+
+.blue-blob {
+  width: 100px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.yellow-blob {
+  width: 100px;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 h1 {
@@ -38,28 +54,45 @@ h1 {
 
 button {
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: 1px solid #4D5B9E;
   padding: 0.6em 1.2em;
   font-size: .75rem;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background: #F5F7FB;
+  color: #293264;
   cursor: pointer;
   
   transition: border-color 0.25s;
   margin: 1rem 0;
 }
 button:hover {
-  border-color: #646cff;
+  background: #D6DBF5;
+  scale: .95;
 }
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.quiz-title {
+  margin-bottom: 0;
+}
+
+.start {
+  background: #4D5B9E;
+  color: white;
+  scale: 2;
+}
+
+.start:hover {
+  scale: 1.9;
+  background: #6372bb;
+}
+
 .questions-container {
   text-align: center;
-  border-bottom: 2px solid rgb(70, 69, 69);
+  border-bottom: 2px solid #DBDEF0;
   padding: 2rem 0;
 }
 
@@ -77,10 +110,20 @@ button:focus-visible {
 
 .answer {
   margin: .75rem .5rem;
+  font-size: 14px;
 }
 
 .finish-quiz {
   margin-top: 1.5rem;
+  background: #4D5B9E;
+  color: white;
+  border: none;
+  width: 120px;
+  height: 35px;
+}
+
+.finish-quiz:hover {
+  background: #6372bb;
 }
 
 .total-score-container {
@@ -92,6 +135,18 @@ button:focus-visible {
 
 .endgame-text {
   margin-right: 1rem;
+}
+
+.endgame-btn {
+  background: #4D5B9E;
+  color: white;
+  border: none;
+  width: 105px;
+  height: 30px;
+}
+
+.endgame-btn:hover {
+  background: #6372bb;
 }
 
 @media (prefers-color-scheme: light) {
