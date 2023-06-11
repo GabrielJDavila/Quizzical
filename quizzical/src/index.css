@@ -45,6 +45,7 @@ body {
   position: absolute;
   right: 0;
   top: 0;
+  margin-left: auto;
 }
 
 h1 {
